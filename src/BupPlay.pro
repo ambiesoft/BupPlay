@@ -11,14 +11,18 @@ HEADERS = \
     player.h \
     playercontrols.h \
     playlistmodel.h \
+    stable.h \
     videowidget.h \
     histogramwidget.h
+
 SOURCES = main.cpp \
     player.cpp \
     playercontrols.cpp \
     playlistmodel.cpp \
     videowidget.cpp \
     histogramwidget.cpp
+
+PRECOMPILED_HEADER = stable.h
 
 target.path = $$[QT_INSTALL_EXAMPLES]/multimediawidgets/player
 INSTALLS += target

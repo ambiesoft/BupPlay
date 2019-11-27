@@ -18,14 +18,9 @@ set MAKE=nmake
 
 
 set SOURCEDIR=src
-set PRONAME=SceneExplorer
-set DISTDIR=C:\Linkout\SceneExplorer
+set PRONAME=BupPlay
+set DISTDIR=C:\Linkout\BupPlay
 
-
-set FFMPEGSOURCEDIR=C:\LegacyPrograms\ffmpeg
-
-:: https://github.com/ambiesoft/FolderConfig/releases
-set FOLDERCONFIGDIR=C:\Linkout\FolderConfig
 
 :: https://www.vector.co.jp/soft/winnt/util/se378224.html
 set FFCEXE=C:\LegacyPrograms\FFC\FFC.exe

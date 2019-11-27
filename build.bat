@@ -41,33 +41,14 @@ if not exist %FFCEXE% (
   echo %FFCEXE% not found. Check the directory.
   goto :error
 )
-if %FFMPEGSOURCEDIR%x==x (
-  echo FFMPEGSOURCEDIR not defined.
-  goto :error
-)
-if not exist %FFMPEGSOURCEDIR%\ (
-  echo %FFMPEGSOURCEDIR% not found. Check the directory.
-  goto :error
-)
-if %FOLDERCONFIGDIR%x==x (
-  echo FOLDERCONFIGDIR not defined.
-  goto :error
-)
-if not exist %FOLDERCONFIGDIR%\ (
-  echo %FOLDERCONFIGDIR% not found. Check the directory.
-  goto :error
-)
+
 
 call :myCopy "%~dp0history.txt" "%DISTDIR%\"
 call :myCopy "%~dp0README.md" "%DISTDIR%\"
 call :myCopy "%~dp0README.jp.md" "%DISTDIR%\"
 call :myCopy "%~dp0LICENSE" "%DISTDIR%\"
-REM call :myXcopy "C:\Linkout\FolderConfig\*" "%DISTDIR%\" /E /Y
-call :myCopy "%~dp0src\FolderConfig.ini" "%DISTDIR%\"
 
 
-%FFCEXE% /t12 "%FFMPEGSOURCEDIR%" /to:%DISTDIR%\
-%FFCEXE% /t12 "%FOLDERCONFIGDIR%\*" /to:%DISTDIR%\
 
 set QTPROJECTFILE=%SOURCEDIR%\%PRONAME%.pro
 @echo on

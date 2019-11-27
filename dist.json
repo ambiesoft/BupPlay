@@ -1,0 +1,41 @@
+{
+    "name": "BupPlay",
+	"builtexes": [
+		"release/BupPlay.exe"
+	],
+	"copyplugins": [
+		"mediaservice/dsengine.dll"
+	],
+	"copytranslations":[
+		"qtxmlpatterns_ja.qm",
+		"assistant_ja.qm",
+		"designer_ja.qm",
+		"linguist_ja.qm",
+		"qt_help_ja.qm",
+		"qt_ja.qm",
+		"qtbase_ja.qm",
+		"qtdeclarative_ja.qm",
+		"qtmultimedia_ja.qm",
+		"qtquickcontrols_ja.qm",
+		"qtscript_ja.qm",
+		"qtserialport_ja.qm",
+		"qtwebsockets_ja.qm"
+	],
+	
+    "ShouldBeFiles": [
+    ],
+
+
+
+
+    "TotalFileCount": "exact",
+    "archivedir": "C:\\Linkout",
+    "remotedir": "http://ambiesoft.mooo.com/ffdav/uploads/BupPlay/",
+    "remotesha1": "http://ambiesoft.mooo.com/ffdav/uploads/getSha1.php?file=BupPlay/{}",
+    "ShouldNotBeFiles": [
+    	"folder.ini"
+    ],
+    "ShouldBeOneOfThem": [],
+    "obtainverfrom": "History.txt",
+    "obtainverregex": "\\d+\\.\\d+\\.\\d+"
+}
