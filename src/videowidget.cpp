@@ -87,6 +87,17 @@ void VideoWidget::mouseDoubleClickEvent(QMouseEvent *event)
 
 void VideoWidget::mousePressEvent(QMouseEvent *event)
 {
+    switch(m_player->state())
+    {
+    case QMediaPlayer::PlayingState:
+        m_player->pause();
+        break;
+    case QMediaPlayer::PausedState:
+        m_player->play();
+        break;
+    case QMediaPlayer::StoppedState:
+        break;
+    }
     QVideoWidget::mousePressEvent(event);
 }
 
