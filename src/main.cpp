@@ -48,30 +48,85 @@
 **
 ****************************************************************************/
 
-#include "player.h"
-
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QDir>
 
+#include "../../lsMisc/stdQt/stdQt.h"
+#include "../../lsMisc/stdQt/settings.h"
+
+#include "consts.h"
+#include "player.h"
+
+using namespace Consts;
+using namespace AmbiesoftQt;
+
+void noMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    Q_UNUSED(type)
+    Q_UNUSED(context)
+    Q_UNUSED(msg)
+}
+
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
 
-    QCoreApplication::setApplicationName("BupPlay");
-    QCoreApplication::setOrganizationName("Ambiesoft");
-    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+    QCoreApplication::setOrganizationName(ORGANIZATION);
+    QCoreApplication::setOrganizationDomain(APPDOMAIN);
+    QCoreApplication::setApplicationName(APPNAME);
+    QCoreApplication::setApplicationVersion(APPVERSION);
+
+    QApplication theApp(argc, argv);
+
+#ifdef QT_NO_DEBUG
+    if ( !theApp.arguments().contains(QLatin1String("--with-debug") ))
+    {
+        qInstallMessageHandler(noMessageOutput);
+    }
+#endif
+
     QCommandLineParser parser;
     QCommandLineOption customAudioRoleOption("custom-audio-role",
                                              "Set a custom audio role for the player.",
                                              "role");
-    parser.setApplicationDescription("BupPlay");
+    parser.setApplicationDescription(APPNAME);
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption(customAudioRoleOption);
     parser.addPositionalArgument("url", "The URL(s) to open.");
-    parser.process(app);
+    parser.process(theApp);
+
+
+    bool bExit = false;
+    Q_ASSERT(isLegalFilePath(theApp.organizationName()));
+    Q_ASSERT(isLegalFilePath(theApp.applicationName()));
+    QString inifile = getInifile(bExit,
+                                 theApp.organizationName(),
+                                 theApp.applicationName());
+    if(bExit)
+        return 1;
+    QScopedPointer<IniSettings> settings(inifile.isEmpty() ?
+                                          new IniSettings(QApplication::organizationName(), QApplication::applicationName()) :
+                                          new IniSettings(inifile));
+    if(!settings->isAccessible())
+    {
+        Alert(nullptr,
+              QObject::tr("\"%1\" is not accessible.").arg(settings->fileName()));
+        return 1;
+    }
+
+
+    // style:  "windows", "windowsvista", "fusion", or "macintosh".
+    qDebug () << "CurrentStyle: " << QApplication::style()->objectName() << __FUNCTION__;
+    QString style = settings->valueString(KEY_STYLE);
+    if(style.isEmpty())
+        style = "fusion";
+    if(!QApplication::setStyle(style))
+    {
+        Alert(nullptr, QObject::tr("Failed to set style") + ": " + style);
+    }
+
 
     Player player;
 
@@ -86,5 +141,5 @@ int main(int argc, char *argv[])
     }
 
     player.show();
-    return app.exec();
+    return theApp.exec();
 }

@@ -8,21 +8,60 @@ QT += network \
       widgets
 
 HEADERS = \
+    consts.h \
     player.h \
     playercontrols.h \
     playlistmodel.h \
     stable.h \
+    stdafx.h \
     videowidget.h \
-    histogramwidget.h
+    histogramwidget.h \
+    ../../lsMisc/stdQt/stdQt.h \
+    ../../lsMisc/stdQt/settings.h
 
 SOURCES = main.cpp \
     player.cpp \
     playercontrols.cpp \
     playlistmodel.cpp \
     videowidget.cpp \
-    histogramwidget.cpp
+    histogramwidget.cpp \
+    ../../lsMisc/stdQt/stdQt.cpp \
+    ../../lsMisc/stdQt/settings.cpp
 
 PRECOMPILED_HEADER = stable.h
 
 target.path = $$[QT_INSTALL_EXAMPLES]/multimediawidgets/player
 INSTALLS += target
+
+RESOURCES += \
+    resource.qrc
+
+win32 {
+    message("win32")
+    HEADERS += \
+        ../../lsMisc/GetLastErrorString.h
+
+    SOURCES += \
+        ../../lsMisc/stdQt/stdQt_win32.cpp \
+        ../../lsMisc/GetLastErrorString.cpp
+
+    win32-g++ {
+        message("win32-g++")
+        LIBS += -lshlwapi -lPsapi
+    }
+    win32-msvc* {
+        message("win32-msvc*")
+        LIBS += User32.lib
+        # Ole32.lib
+    }
+
+    RC_ICONS += images/icon.ico
+}
+linux {
+    message("linux-g++")
+
+    SOURCES += \
+        ../../lsMisc/stdQt/stdQt_linux.cpp
+
+    RC_ICONS += images/icon.ico
+}

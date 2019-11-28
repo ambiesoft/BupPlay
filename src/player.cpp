@@ -76,6 +76,9 @@ Player::Player(QWidget *parent)
     m_player->setPlaylist(m_playlist);
 //! [create-objs]
 
+    // this->setWindowIcon(QIcon(":/images/icon.png"));
+    this->setWindowIcon(QIcon(":/images/icon.ico"));
+
     connect(m_player, &QMediaPlayer::durationChanged, this, &Player::durationChanged);
     connect(m_player, &QMediaPlayer::positionChanged, this, &Player::positionChanged);
     connect(m_player, QOverload<>::of(&QMediaPlayer::metaDataChanged), this, &Player::metaDataChanged);
