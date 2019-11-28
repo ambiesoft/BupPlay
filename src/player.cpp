@@ -62,10 +62,19 @@
 #include <QMediaMetaData>
 #include <QtWidgets>
 
-Player::Player(QWidget *parent)
-    : QWidget(parent)
+#include "../../lsMisc/stdQt/settings.h"
+
+#include "consts.h"
+
+using namespace Consts;
+using namespace AmbiesoftQt;
+
+Player::Player(QWidget *parent,
+               IniSettings& settings)
+    : QWidget(parent),
+      settings_(settings)
 {
-//! [create-objs]
+    //! [create-objs]
     m_player = new QMediaPlayer(this);
     m_player->setAudioRole(QAudio::VideoRole);
     qInfo() << "Supported audio roles:";
@@ -74,7 +83,7 @@ Player::Player(QWidget *parent)
     // owned by PlaylistModel
     m_playlist = new QMediaPlaylist();
     m_player->setPlaylist(m_playlist);
-//! [create-objs]
+    //! [create-objs]
 
     // this->setWindowIcon(QIcon(":/images/icon.png"));
     this->setWindowIcon(QIcon(":/images/icon.ico"));
@@ -89,13 +98,13 @@ Player::Player(QWidget *parent)
     connect(m_player, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error), this, &Player::displayErrorMessage);
     connect(m_player, &QMediaPlayer::stateChanged, this, &Player::stateChanged);
 
-//! [2]
+    //! [2]
     m_videoWidget = new VideoWidget(this, m_player);
     m_player->setVideoOutput(m_videoWidget);
 
     m_playlistModel = new PlaylistModel(this);
     m_playlistModel->setPlaylist(m_playlist);
-//! [2]
+    //! [2]
 
     m_playlistView = new QListView(this);
     m_playlistView->setModel(m_playlistModel);
@@ -187,6 +196,9 @@ Player::Player(QWidget *parent)
     layout->addWidget(m_statusBar);
 #endif
 
+    // Drag and drop
+    this->setAcceptDrops(true);
+
     setLayout(layout);
 
     if (!isPlayerAvailable()) {
@@ -202,6 +214,11 @@ Player::Player(QWidget *parent)
     }
 
     metaDataChanged();
+
+    // Load Settings
+    QVariant volume = settings_.value(KEY_VOLUME);
+    if( volume.isValid())
+        m_controls->setVolume(volume.toInt());
 }
 
 Player::~Player()
@@ -269,15 +286,15 @@ void Player::metaDataChanged()
 {
     if (m_player->isMetaDataAvailable()) {
         setTrackInfo(QString("%1 - %2")
-                .arg(m_player->metaData(QMediaMetaData::AlbumArtist).toString())
-                .arg(m_player->metaData(QMediaMetaData::Title).toString()));
+                     .arg(m_player->metaData(QMediaMetaData::AlbumArtist).toString())
+                     .arg(m_player->metaData(QMediaMetaData::Title).toString()));
 
         if (m_coverLabel) {
             QUrl url = m_player->metaData(QMediaMetaData::CoverArtUrlLarge).value<QUrl>();
 
             m_coverLabel->setPixmap(!url.isEmpty()
-                    ? QPixmap(url.toString())
-                    : QPixmap());
+                                    ? QPixmap(url.toString())
+                                    : QPixmap());
         }
     }
 }
@@ -351,8 +368,8 @@ void Player::handleCursor(QMediaPlayer::MediaStatus status)
 {
 #ifndef QT_NO_CURSOR
     if (status == QMediaPlayer::LoadingMedia ||
-        status == QMediaPlayer::BufferingMedia ||
-        status == QMediaPlayer::StalledMedia)
+            status == QMediaPlayer::BufferingMedia ||
+            status == QMediaPlayer::StalledMedia)
         setCursor(QCursor(Qt::BusyCursor));
     else
         unsetCursor();
@@ -423,9 +440,9 @@ void Player::updateDurationInfo(qint64 currentInfo)
     QString tStr;
     if (currentInfo || m_duration) {
         QTime currentTime((currentInfo / 3600) % 60, (currentInfo / 60) % 60,
-            currentInfo % 60, (currentInfo * 1000) % 1000);
+                          currentInfo % 60, (currentInfo * 1000) % 1000);
         QTime totalTime((m_duration / 3600) % 60, (m_duration / 60) % 60,
-            m_duration % 60, (m_duration * 1000) % 1000);
+                        m_duration % 60, (m_duration * 1000) % 1000);
         QString format = "mm:ss";
         if (m_duration > 3600)
             format = "hh:mm:ss";
@@ -492,4 +509,38 @@ void Player::showEvent(QShowEvent *event)
     m_player->setPlaybackRate(m_controls->playbackRate());
     m_player->play();
 
+}
+void Player::closeEvent(QCloseEvent *event)
+{
+    Q_UNUSED(event)
+
+    // WaitingCursor wc;
+
+    settings_.setValue(KEY_VOLUME, m_controls->volume());
+
+    settings_.sync();
+    ParentClass::closeEvent(event);
+}
+void Player::dragEnterEvent(QDragEnterEvent *event)
+{
+    event->acceptProposedAction();
+}
+void Player::dragMoveEvent(QDragMoveEvent *event)
+{
+    event->acceptProposedAction();
+}
+void Player::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    event->accept();
+}
+void Player::dropEvent(QDropEvent *event)
+{
+    const QMimeData* mimeData = event->mimeData();
+
+    if (!mimeData->hasUrls())
+        return;
+
+    addToPlaylist(mimeData->urls());
+
+    event->acceptProposedAction();
 }

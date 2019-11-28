@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
     }
 
 
-    Player player;
+    Player player(nullptr, *settings);
 
     if (parser.isSet(customAudioRoleOption))
         player.setCustomAudioRole(parser.value(customAudioRoleOption));

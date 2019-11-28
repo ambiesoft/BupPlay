@@ -55,6 +55,8 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 
+#include "../../lsMisc/stdQt/settings.h"
+
 QT_BEGIN_NAMESPACE
 class QAbstractItemView;
 class QLabel;
@@ -76,9 +78,11 @@ class Player : public QWidget
     Q_OBJECT
     using ParentClass = QWidget;
 
+    AmbiesoftQt::IniSettings& settings_;
+
     PlayerControls *m_controls = nullptr;
 public:
-    explicit Player(QWidget *parent = nullptr);
+    explicit Player(QWidget *parent, AmbiesoftQt::IniSettings& settings);
     virtual ~Player() override;
 
     bool isPlayerAvailable() const;
@@ -112,6 +116,11 @@ private slots:
 
 protected:
     virtual void showEvent(QShowEvent *event) override;
+    virtual void closeEvent(QCloseEvent *event)override;
+    virtual void dragEnterEvent(QDragEnterEvent *event) override;
+    virtual void dragMoveEvent(QDragMoveEvent *event)override;
+    virtual void dragLeaveEvent(QDragLeaveEvent *event)override;
+    virtual void dropEvent(QDropEvent *event)override;
 private:
     void clearHistogram();
     void setTrackInfo(const QString &info);
