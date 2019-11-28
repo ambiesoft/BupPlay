@@ -52,6 +52,7 @@
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QDir>
+#include <QStyle>
 
 #include "../../lsMisc/stdQt/stdQt.h"
 #include "../../lsMisc/stdQt/settings.h"
