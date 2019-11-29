@@ -65,6 +65,8 @@
 #include "../../lsMisc/stdQt/settings.h"
 
 #include "consts.h"
+#include "slider_style.h"
+#include "clickableSlider.h"
 
 using namespace Consts;
 using namespace AmbiesoftQt;
@@ -112,11 +114,14 @@ Player::Player(QWidget *parent,
 
     connect(m_playlistView, &QAbstractItemView::activated, this, &Player::jump);
 
-    m_slider = new QSlider(Qt::Horizontal, this);
+    m_slider = new ClickableSlider(m_player, Qt::Horizontal, this);
+    m_slider->setStyle(new SliderStyle(m_slider->style()));
+
     m_slider->setRange(0, m_player->duration() / 1000);
 
     m_labelDuration = new QLabel(this);
     connect(m_slider, &QSlider::sliderMoved, this, &Player::seek);
+
 
     m_labelHistogram = new QLabel(this);
     m_labelHistogram->setText("Histogram:");
@@ -327,6 +332,7 @@ void Player::seek(int seconds)
 {
     m_player->setPosition(seconds * 1000);
 }
+
 
 void Player::statusChanged(QMediaPlayer::MediaStatus status)
 {

@@ -8,10 +8,12 @@ QT += network \
       widgets
 
 HEADERS = \
+    clickableSlider.h \
     consts.h \
     player.h \
     playercontrols.h \
     playlistmodel.h \
+    slider_style.h \
     stable.h \
     stdafx.h \
     videowidget.h \
@@ -20,6 +22,7 @@ HEADERS = \
     ../../lsMisc/stdQt/settings.h
 
 SOURCES = main.cpp \
+    clickableSlider.cpp \
     player.cpp \
     playercontrols.cpp \
     playlistmodel.cpp \
@@ -51,7 +54,7 @@ win32 {
     }
     win32-msvc* {
         message("win32-msvc*")
-        LIBS += User32.lib
+        LIBS += User32.lib Shlwapi.lib
         # Ole32.lib
     }
 
@@ -65,3 +68,6 @@ linux {
 
     RC_ICONS += images/icon.ico
 }
+
+DISTFILES += \
+    ../history.txt

@@ -73,6 +73,7 @@ QT_END_NAMESPACE
 class PlaylistModel;
 class HistogramWidget;
 class PlayerControls;
+class ClickableSlider;
 class Player : public QWidget
 {
     Q_OBJECT
@@ -132,7 +133,7 @@ private:
     QMediaPlaylist *m_playlist = nullptr;
     QVideoWidget *m_videoWidget = nullptr;
     QLabel *m_coverLabel = nullptr;
-    QSlider *m_slider = nullptr;
+    ClickableSlider *m_slider = nullptr;
     QLabel *m_labelDuration = nullptr;
     QPushButton *m_fullScreenButton = nullptr;
     QPushButton *m_colorButton = nullptr;

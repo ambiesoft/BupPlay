@@ -94,6 +94,7 @@ PlayerControls::PlayerControls(QWidget *parent)
     m_rateBox = new QComboBox(this);
     m_rateBox->addItem("0.5x", QVariant(0.5));
     m_rateBox->addItem("1.0x", QVariant(1.0));
+    m_rateBox->addItem("1.125x", QVariant(1.125));
     m_rateBox->addItem("1.25x", QVariant(1.25));
     m_rateBox->addItem("1.5x", QVariant(1.5));
     m_rateBox->addItem("2.0x", QVariant(2.0));
