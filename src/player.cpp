@@ -201,6 +201,9 @@ Player::Player(QWidget *parent,
     layout->addWidget(m_statusBar);
 #endif
 
+    // keypress?
+    // this->setFocusPolicy ( Qt::StrongFocus );
+
     // Drag and drop
     this->setAcceptDrops(true);
 
@@ -549,4 +552,10 @@ void Player::dropEvent(QDropEvent *event)
     addToPlaylist(mimeData->urls());
 
     event->acceptProposedAction();
+}
+
+void Player::keyPressEvent(QKeyEvent *event)
+{
+    qDebug() <<event->key() << __FUNCTION__;
+    ParentClass::keyPressEvent(event);
 }
