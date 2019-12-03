@@ -61,6 +61,8 @@
 #include <QAudioProbe>
 #include <QMediaMetaData>
 #include <QtWidgets>
+#include <QtGlobal>
+#include <QKeyEvent>
 
 #include "../../lsMisc/stdQt/settings.h"
 
@@ -71,11 +73,38 @@
 using namespace Consts;
 using namespace AmbiesoftQt;
 
+Player* Player::self_ = nullptr;
+// static
+bool Player::vv(void** pvv)
+{
+    QEvent* event = reinterpret_cast<QEvent*>(pvv[1]);
+    if(event->type()==QEvent::KeyPress)
+    {
+        QKeyEvent* pKeyEvent = reinterpret_cast<QKeyEvent*>(event);
+        qDebug() << pKeyEvent->key() << __FUNCTION__;
+        if(pKeyEvent->key()==Qt::Key_Space)
+        {
+            qDebug() << "[space]" << __FUNCTION__;
+
+            Q_ASSERT(Player::self_);
+            Player::self_->togglePlay();
+
+            bool* result = reinterpret_cast<bool*>(pvv[2]);
+            *result = true;
+            pKeyEvent->accept();
+            return true;
+        }
+    }
+    return false;
+}
 Player::Player(QWidget *parent,
                IniSettings& settings)
     : QWidget(parent),
       settings_(settings)
 {
+    self_ = this;
+    QInternal::registerCallback(QInternal::EventNotifyCallback,vv);
+
     //! [create-objs]
     m_player = new QMediaPlayer(this);
     m_player->setAudioRole(QAudio::VideoRole);
@@ -101,7 +130,7 @@ Player::Player(QWidget *parent,
     connect(m_player, &QMediaPlayer::stateChanged, this, &Player::stateChanged);
 
     //! [2]
-    m_videoWidget = new VideoWidget(this, m_player);
+    m_videoWidget = new VideoWidget(this, this, m_player);
     m_player->setVideoOutput(m_videoWidget);
 
     m_playlistModel = new PlaylistModel(this);
@@ -554,8 +583,22 @@ void Player::dropEvent(QDropEvent *event)
     event->acceptProposedAction();
 }
 
-void Player::keyPressEvent(QKeyEvent *event)
+//void Player::keyPressEvent(QKeyEvent *event)
+//{
+//    qDebug() <<event->key() << __FUNCTION__;
+//    ParentClass::keyPressEvent(event);
+//}
+void Player::togglePlay()
 {
-    qDebug() <<event->key() << __FUNCTION__;
-    ParentClass::keyPressEvent(event);
+    switch(m_player->state())
+    {
+    case QMediaPlayer::PlayingState:
+        m_player->pause();
+        break;
+    case QMediaPlayer::PausedState:
+        m_player->play();
+        break;
+    case QMediaPlayer::StoppedState:
+        break;
+    }
 }

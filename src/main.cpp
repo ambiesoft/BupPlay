@@ -59,6 +59,7 @@
 
 #include "consts.h"
 #include "player.h"
+#include "application.h"
 
 using namespace Consts;
 using namespace AmbiesoftQt;
@@ -78,7 +79,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APPNAME);
     QCoreApplication::setApplicationVersion(APPVERSION);
 
-    QApplication theApp(argc, argv);
+    Application theApp(argc, argv);
 
 #ifdef QT_NO_DEBUG
     if ( !theApp.arguments().contains(QLatin1String("--with-debug") ))

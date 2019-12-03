@@ -8,6 +8,7 @@ QT += network \
       widgets
 
 HEADERS = \
+    application.h \
     clickableSlider.h \
     consts.h \
     player.h \
@@ -22,6 +23,7 @@ HEADERS = \
     ../../lsMisc/stdQt/settings.h
 
 SOURCES = main.cpp \
+    application.cpp \
     clickableSlider.cpp \
     player.cpp \
     playercontrols.cpp \

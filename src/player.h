@@ -79,6 +79,7 @@ class Player : public QWidget
     Q_OBJECT
     using ParentClass = QWidget;
 
+    static Player* self_;
     AmbiesoftQt::IniSettings& settings_;
 
     PlayerControls *m_controls = nullptr;
@@ -90,6 +91,7 @@ public:
 
     void addToPlaylist(const QList<QUrl> &urls);
     void setCustomAudioRole(const QString &role);
+    void togglePlay();
 
 signals:
     void fullScreenChanged(bool fullScreen);
@@ -122,13 +124,14 @@ protected:
     virtual void dragMoveEvent(QDragMoveEvent *event)override;
     virtual void dragLeaveEvent(QDragLeaveEvent *event)override;
     virtual void dropEvent(QDropEvent *event)override;
-    virtual void keyPressEvent(QKeyEvent *event) override;
+    // virtual void keyPressEvent(QKeyEvent *event) override;
 private:
     void clearHistogram();
     void setTrackInfo(const QString &info);
     void setStatusInfo(const QString &info);
     void handleCursor(QMediaPlayer::MediaStatus status);
     void updateDurationInfo(qint64 currentInfo);
+    static bool vv(void** pvv);
 
     QMediaPlayer *m_player = nullptr;
     QMediaPlaylist *m_playlist = nullptr;

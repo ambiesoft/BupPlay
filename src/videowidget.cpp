@@ -53,9 +53,9 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 
-VideoWidget::VideoWidget(QWidget *parent, QMediaPlayer* player)
+VideoWidget::VideoWidget(QWidget *parent, Player* player, QMediaPlayer* mediaplayer)
     : QVideoWidget(parent),
-      m_player(player)
+      m_player(player), m_mediaplayer(mediaplayer)
 {
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
@@ -66,18 +66,18 @@ VideoWidget::VideoWidget(QWidget *parent, QMediaPlayer* player)
     setAttribute(Qt::WA_OpaquePaintEvent);
 }
 
-void VideoWidget::keyPressEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Escape && isFullScreen()) {
-        setFullScreen(false);
-        event->accept();
-    } else if (event->key() == Qt::Key_Enter && event->modifiers() & Qt::Key_Alt) {
-        setFullScreen(!isFullScreen());
-        event->accept();
-    } else {
-        QVideoWidget::keyPressEvent(event);
-    }
-}
+//void VideoWidget::keyPressEvent(QKeyEvent *event)
+//{
+//    if (event->key() == Qt::Key_Escape && isFullScreen()) {
+//        setFullScreen(false);
+//        event->accept();
+//    } else if (event->key() == Qt::Key_Enter && event->modifiers() & Qt::Key_Alt) {
+//        setFullScreen(!isFullScreen());
+//        event->accept();
+//    } else {
+//        QVideoWidget::keyPressEvent(event);
+//    }
+//}
 
 void VideoWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
@@ -87,17 +87,7 @@ void VideoWidget::mouseDoubleClickEvent(QMouseEvent *event)
 
 void VideoWidget::mousePressEvent(QMouseEvent *event)
 {
-    switch(m_player->state())
-    {
-    case QMediaPlayer::PlayingState:
-        m_player->pause();
-        break;
-    case QMediaPlayer::PausedState:
-        m_player->play();
-        break;
-    case QMediaPlayer::StoppedState:
-        break;
-    }
+    m_player->togglePlay();
     QVideoWidget::mousePressEvent(event);
 }
 
@@ -105,7 +95,7 @@ void VideoWidget::mousePressEvent(QMouseEvent *event)
 void VideoWidget::wheelEvent(QWheelEvent *event)
 {
     int delta = 5000;
-    m_player->setPosition(m_player->position() +
+    m_mediaplayer->setPosition(m_mediaplayer->position() +
                           (event->delta() > 0 ? -delta:delta));
     event->accept();
     // QVideoWidget::wheelEvent(event);

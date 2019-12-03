@@ -53,15 +53,18 @@
 
 #include <QVideoWidget>
 #include <QMediaPlayer>
+#include "player.h"
+
 class VideoWidget : public QVideoWidget
 {
     Q_OBJECT
-    QMediaPlayer* m_player = nullptr;
+    Player* m_player = nullptr;
+    QMediaPlayer* m_mediaplayer = nullptr;
 public:
-    explicit VideoWidget(QWidget *parent, QMediaPlayer* player);
+    explicit VideoWidget(QWidget *parent, Player* player, QMediaPlayer* mediaplayer);
 
 protected:
-    void keyPressEvent(QKeyEvent *event) override;
+    //void keyPressEvent(QKeyEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
 #if QT_CONFIG(wheelevent)
