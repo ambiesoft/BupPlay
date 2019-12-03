@@ -92,6 +92,7 @@ public:
     void addToPlaylist(const QList<QUrl> &urls);
     void setCustomAudioRole(const QString &role);
     void togglePlay();
+    void onHookWheel(QWheelEvent *pWheelEvent);
 
 signals:
     void fullScreenChanged(bool fullScreen);
@@ -131,7 +132,7 @@ private:
     void setStatusInfo(const QString &info);
     void handleCursor(QMediaPlayer::MediaStatus status);
     void updateDurationInfo(qint64 currentInfo);
-    static bool vv(void** pvv);
+    static bool hook(void** pvv);
 
     QMediaPlayer *m_player = nullptr;
     QMediaPlaylist *m_playlist = nullptr;

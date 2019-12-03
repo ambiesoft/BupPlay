@@ -68,7 +68,7 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
 #if QT_CONFIG(wheelevent)
-    virtual void wheelEvent(QWheelEvent *event) override;
+    // virtual void wheelEvent(QWheelEvent *event) override;
 #endif
 };
 

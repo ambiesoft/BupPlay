@@ -75,25 +75,44 @@ using namespace AmbiesoftQt;
 
 Player* Player::self_ = nullptr;
 // static
-bool Player::vv(void** pvv)
+bool Player::hook(void** pvv)
 {
     QEvent* event = reinterpret_cast<QEvent*>(pvv[1]);
-    if(event->type()==QEvent::KeyPress)
+    switch(event->type())
     {
-        QKeyEvent* pKeyEvent = reinterpret_cast<QKeyEvent*>(event);
-        qDebug() << pKeyEvent->key() << __FUNCTION__;
-        if(pKeyEvent->key()==Qt::Key_Space)
+        case QEvent::KeyPress:
         {
-            qDebug() << "[space]" << __FUNCTION__;
+            QKeyEvent* pKeyEvent = reinterpret_cast<QKeyEvent*>(event);
+            qDebug() << pKeyEvent->key() << __FUNCTION__;
+            if(pKeyEvent->key()==Qt::Key_Space)
+            {
+                qDebug() << "[space]" << __FUNCTION__;
 
-            Q_ASSERT(Player::self_);
-            Player::self_->togglePlay();
+                Q_ASSERT(Player::self_);
+                Player::self_->togglePlay();
+
+                bool* result = reinterpret_cast<bool*>(pvv[2]);
+                *result = true;
+                pKeyEvent->accept();
+                return true;
+            }
+        }
+        break;
+
+        case QEvent::Wheel:
+        {
+            QWheelEvent *pWheelEvent = reinterpret_cast<QWheelEvent*>(event);
+            Player::self_->onHookWheel(pWheelEvent);
 
             bool* result = reinterpret_cast<bool*>(pvv[2]);
             *result = true;
-            pKeyEvent->accept();
+            pWheelEvent->accept();
             return true;
         }
+        break;
+
+        default:
+        {}
     }
     return false;
 }
@@ -103,7 +122,7 @@ Player::Player(QWidget *parent,
       settings_(settings)
 {
     self_ = this;
-    QInternal::registerCallback(QInternal::EventNotifyCallback,vv);
+    QInternal::registerCallback(QInternal::EventNotifyCallback,hook);
 
     //! [create-objs]
     m_player = new QMediaPlayer(this);
@@ -601,4 +620,11 @@ void Player::togglePlay()
     case QMediaPlayer::StoppedState:
         break;
     }
+}
+
+void Player::onHookWheel(QWheelEvent *pWheelEvent)
+{
+    int delta = 5000;
+    m_player->setPosition(m_player->position() +
+                          (pWheelEvent->delta() > 0 ? -delta:delta));
 }

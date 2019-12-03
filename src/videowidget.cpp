@@ -91,13 +91,13 @@ void VideoWidget::mousePressEvent(QMouseEvent *event)
     QVideoWidget::mousePressEvent(event);
 }
 
-#if QT_CONFIG(wheelevent)
-void VideoWidget::wheelEvent(QWheelEvent *event)
-{
-    int delta = 5000;
-    m_mediaplayer->setPosition(m_mediaplayer->position() +
-                          (event->delta() > 0 ? -delta:delta));
-    event->accept();
-    // QVideoWidget::wheelEvent(event);
-}
-#endif
+//#if QT_CONFIG(wheelevent)
+//void VideoWidget::wheelEvent(QWheelEvent *event)
+//{
+//    int delta = 5000;
+//    m_mediaplayer->setPosition(m_mediaplayer->position() +
+//                          (event->delta() > 0 ? -delta:delta));
+//    event->accept();
+//    // QVideoWidget::wheelEvent(event);
+//}
+//#endif
