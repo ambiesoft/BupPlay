@@ -165,7 +165,7 @@ Player::Player(QWidget *parent,
     m_slider = new ClickableSlider(m_player, Qt::Horizontal, this);
     m_slider->setStyle(new SliderStyle(m_slider->style()));
 
-    m_slider->setRange(0, m_player->duration() / 1000);
+    m_slider->setRange(0, static_cast<int>(m_player->duration() / 1000));
 
     m_labelDuration = new QLabel(this);
     connect(m_slider, &QSlider::sliderMoved, this, &Player::seek);
@@ -341,9 +341,27 @@ void Player::positionChanged(qint64 progress)
 void Player::metaDataChanged()
 {
     if (m_player->isMetaDataAvailable()) {
-        setTrackInfo(QString("%1 - %2")
-                     .arg(m_player->metaData(QMediaMetaData::AlbumArtist).toString())
-                     .arg(m_player->metaData(QMediaMetaData::Title).toString()));
+        QString trackInfo;
+        QString artist = m_player->metaData(QMediaMetaData::AlbumArtist).toString();
+        QString title = m_player->metaData(QMediaMetaData::Title).toString();
+        if( !artist.isEmpty())
+        {
+            trackInfo = artist;
+            if(!title.isEmpty())
+            {
+                trackInfo += " - ";
+                trackInfo += title;
+            }
+        }
+        else if(!title.isEmpty())
+        {
+            trackInfo = title;
+        }
+        else
+        {
+            trackInfo = QFileInfo(m_player->currentMedia().canonicalUrl().path()).fileName();
+        }
+        setTrackInfo(trackInfo);
 
         if (m_coverLabel) {
             QUrl url = m_player->metaData(QMediaMetaData::CoverArtUrlLarge).value<QUrl>();
