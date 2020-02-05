@@ -55,7 +55,7 @@
 #include <QStyle>
 
 #include "../../lsMisc/stdQt/stdQt.h"
-#include "../../lsMisc/stdQt/settings.h"
+#include "../../lsMisc/stdQt/inisettings.h"
 
 #include "consts.h"
 #include "player.h"

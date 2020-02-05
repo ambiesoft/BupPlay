@@ -64,7 +64,7 @@
 #include <QtGlobal>
 #include <QKeyEvent>
 
-#include "../../lsMisc/stdQt/settings.h"
+#include "../../lsMisc/stdQt/inisettings.h"
 
 #include "consts.h"
 #include "slider_style.h"
@@ -118,7 +118,7 @@ bool Player::hook(void** pvv)
 }
 Player::Player(QWidget *parent,
                IniSettings& settings)
-    : QWidget(parent),
+    : ParentClass(parent),
       settings_(settings)
 {
     self_ = this;
@@ -271,10 +271,7 @@ Player::Player(QWidget *parent,
 
     metaDataChanged();
 
-    // Load Settings
-    QVariant volume = settings_.value(KEY_VOLUME);
-    if( volume.isValid())
-        m_controls->setVolume(volume.toInt());
+    serializeSettings(false);
 }
 
 Player::~Player()
@@ -589,11 +586,9 @@ void Player::closeEvent(QCloseEvent *event)
 {
     Q_UNUSED(event)
 
+    serializeSettings(true);
     // WaitingCursor wc;
 
-    settings_.setValue(KEY_VOLUME, m_controls->volume());
-
-    settings_.sync();
     ParentClass::closeEvent(event);
 }
 void Player::dragEnterEvent(QDragEnterEvent *event)
@@ -645,4 +640,32 @@ void Player::onHookWheel(QWheelEvent *pWheelEvent)
     int delta = 5000;
     m_player->setPosition(m_player->position() +
                           (pWheelEvent->delta() > 0 ? -delta:delta));
+}
+void Player::serializeSettings(const bool bWrite)
+{
+    // geometry
+    if(bWrite)
+    {
+        settings_.setValue(KEY_GEOMETRY, saveGeometry());
+    }
+    else
+    {
+        restoreGeometry(settings_.value(KEY_GEOMETRY).toByteArray());
+    }
+
+
+    // volume
+    if(bWrite)
+    {
+        settings_.setValue(KEY_VOLUME, m_controls->volume());
+    }
+    else
+    {
+        QVariant volume = settings_.value(KEY_VOLUME);
+        if( volume.isValid())
+            m_controls->setVolume(volume.toInt());
+    }
+
+    if(bWrite)
+        settings_.sync();
 }

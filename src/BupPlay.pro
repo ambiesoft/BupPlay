@@ -20,7 +20,7 @@ HEADERS = \
     videowidget.h \
     histogramwidget.h \
     ../../lsMisc/stdQt/stdQt.h \
-    ../../lsMisc/stdQt/settings.h
+    ../../lsMisc/stdQt/inisettings.h
 
 SOURCES = main.cpp \
     application.cpp \
@@ -31,7 +31,7 @@ SOURCES = main.cpp \
     videowidget.cpp \
     histogramwidget.cpp \
     ../../lsMisc/stdQt/stdQt.cpp \
-    ../../lsMisc/stdQt/settings.cpp
+    ../../lsMisc/stdQt/inisettings.cpp
 
 PRECOMPILED_HEADER = stable.h
 

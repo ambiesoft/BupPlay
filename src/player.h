@@ -55,7 +55,7 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 
-#include "../../lsMisc/stdQt/settings.h"
+#include "../../lsMisc/stdQt/inisettings.h"
 
 QT_BEGIN_NAMESPACE
 class QAbstractItemView;
@@ -93,7 +93,7 @@ public:
     void setCustomAudioRole(const QString &role);
     void togglePlay();
     void onHookWheel(QWheelEvent *pWheelEvent);
-
+    void serializeSettings(const bool bWrite);
 signals:
     void fullScreenChanged(bool fullScreen);
 
