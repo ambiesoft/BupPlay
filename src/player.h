@@ -117,6 +117,8 @@ private slots:
     void displayErrorMessage();
 
     void showColorDialog();
+    void OnPlayListContextMenu(const QPoint&);
+    void onOpenDirectory();
 
 protected:
     virtual void showEvent(QShowEvent *event) override;

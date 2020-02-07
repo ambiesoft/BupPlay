@@ -65,6 +65,7 @@
 #include <QKeyEvent>
 
 #include "../../lsMisc/stdQt/inisettings.h"
+#include "../../lsMisc/stdQt/stdQt.h"
 
 #include "consts.h"
 #include "slider_style.h"
@@ -116,6 +117,8 @@ bool Player::hook(void** pvv)
     }
     return false;
 }
+
+
 Player::Player(QWidget *parent,
                IniSettings& settings)
     : ParentClass(parent),
@@ -157,6 +160,9 @@ Player::Player(QWidget *parent,
     //! [2]
 
     m_playlistView = new QListView(this);
+    m_playlistView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_playlistView, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(OnPlayListContextMenu(QPoint)));
     m_playlistView->setModel(m_playlistModel);
     m_playlistView->setCurrentIndex(m_playlistModel->index(m_playlist->currentIndex(), 0));
 
@@ -668,4 +674,28 @@ void Player::serializeSettings(const bool bWrite)
 
     if(bWrite)
         settings_.sync();
+}
+
+void Player::OnPlayListContextMenu(const QPoint &pos)
+{
+    // Create menu and insert some actions
+    QMenu myMenuItemArea;
+    myMenuItemArea.addAction(tr("&Open Directory"), this, SLOT(onOpenDirectory()));
+
+    // Show context menu at handling position
+    myMenuItemArea.exec(m_playlistView->mapToGlobal(pos));
+}
+void Player::onOpenDirectory()
+{
+//    QString file = m_playlistView->currentIndex().data().toString();
+    QModelIndex currentIndex = m_playlistView->currentIndex();
+//    QString itemText = index.data(Qt::DisplayRole).toString();
+//    qDebug() << itemText;
+
+    QUrl location = m_playlist->media(currentIndex.row()).canonicalUrl();
+    QString fullpath = location.toLocalFile();
+//    qDebug() << aa;
+
+    if(!showInGraphicalShell(this, fullpath))
+        Alert(this, tr("Failed to open directory."));
 }
